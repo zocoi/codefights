@@ -1,0 +1,3 @@
+def MatchstickSolutions(equation)
+
+end
