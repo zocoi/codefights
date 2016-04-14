@@ -44,15 +44,16 @@ def MatchstickSolutions(equation)
   count = 0
   (0...equation.size).each do |idx|
     c = equation[idx]
+    # unmodified char
     if unmodified_chars.include? c
       next
     end
-    skip_next_char = false
+    # self modified char
     self_modified_chars.each do |tmp|
       if tmp.include? c
         [tmp - c].each{|new_c|
           new_eq = equation.clone
-          new_eq[idx] = new
+          new_eq[idx] = new_c
           if equation_correct?(new_eq)
             count = count + 1
             break
@@ -60,8 +61,41 @@ def MatchstickSolutions(equation)
         }
       end
     end
-    next if skip_next_char
-    
+    # permutable char
+    minus_chars = {
+      "6": ["5"],
+      "7": ["1"],
+      "8": ["0", "6", "9"],
+      "9": ["3", "5"],
+      "+": "-",
+      }
+    bonus_chars = {
+        "1": ["7"],
+        "3": ["9"],
+        "5": ["6", "9"],
+        "6": ["8"],
+        "9": ["8"],
+        "0": ["8"],
+        "-": "+"
+        }
+    if minus_chars.key? c
+      minus_chars[c].each do |new_c|
+        new_eq = equation.clone
+        (new_eq.split("") - [c]).each do |other_c|
+          new_eq[idx] = new_c
+          if bonus_chars.key? other_c
+            bonus_chars[other_c].each do |new_other_c|
+              other_new_eq = new_eq.clone
+              other_new_eq[other_c] = new_other_c
+              if equation_correct?(new_eq)
+                count = count + 1
+                break
+              end
+            end
+          end
+        end
+      end
+    end
   end
   count
 end
