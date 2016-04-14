@@ -19,22 +19,58 @@
 # The solution is 1+7=8. Although the original equation holds true, it is not a valid solution because it's not a result of some move.
 ###
 
-
-matchstick_positions = {
-  "1": [4,5]
-  "2": [2,3,5,6,8]
-  "3": [3,4,5,6,8]
-  "4": [1,4,5,8]
-  "5": [1,3,4,6,8]
-  "6": [1,2,3,4,6,8]
-  "7": [4,5,6]
-  "8": [1,2,3,4,5,6,8]
-  "9": [1,3,4,5,6,8]
-  "-": [8]
-  "+": [8,10]
-  "=": [7,9]
-}
-
 def MatchstickSolutions(equation)
+  matchstick_positions = {
+    "0" => [1,2,3,4,5,6],
+    "1" => [4,5],
+    "2" => [2,3,5,6,8],
+    "3" => [3,4,5,6,8],
+    "4" => [1,4,5,8],
+    "5" => [1,3,4,6,8],
+    "6" => [1,2,3,4,6,8],
+    "7" => [4,5,6],
+    "8" => [1,2,3,4,5,6,8],
+    "9" => [1,3,4,5,6,8],
+    "-" => [8],
+    "+" => [8,10],
+    "=" => [7,9],
+  }
+  
+  unmodified_chars = ["1", "4", "7", "8", "-", "="]
+  self_modified_chars = [["2", "3", "5"], ["0","6","9"]]
 
+  # Method start
+
+  count = 0
+  (0...equation.size).each do |idx|
+    c = equation[idx]
+    if unmodified_chars.include? c
+      next
+    end
+    skip_next_char = false
+    self_modified_chars.each do |tmp|
+      if tmp.include? c
+        [tmp - c].each{|new_c|
+          new_eq = equation.clone
+          new_eq[idx] = new
+          if equation_correct?(new_eq)
+            count = count + 1
+            break
+          end
+        }
+      end
+    end
+    next if skip_next_char
+    
+  end
+  count
 end
+
+def equation_correct?(left, right=nil)
+  if right == nil
+    left, right = left.split("=")
+  end
+  eval(left) == right.to_i
+end
+
+puts MatchstickSolutions("10+1=3").inspect
