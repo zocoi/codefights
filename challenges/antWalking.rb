@@ -17,3 +17,7 @@ def antWalking(n)
   r = Rational((1..n).to_a.combination(n/2).to_a.size ** 2, 4**n)
   [r.numerator, r.denominator]
 end
+# Shortest solution possible in ruby
+# def antWalking(n)
+#   ((1..n).to_a.combination(n/2).count.to_r ** 2/ 4**n).to_s.split('/').map &:to_i
+# end
